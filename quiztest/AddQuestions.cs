@@ -22,8 +22,10 @@ namespace quiztest
                 case CmdState.Add:
                     okBtn.Text = "Добавить";
                     break;
+
                 case CmdState.Update:
-                    okBtn.Text = "Изменить"; EditState();
+                    okBtn.Text = "Изменить"; 
+                    EditState();
                     break;
             }
         }

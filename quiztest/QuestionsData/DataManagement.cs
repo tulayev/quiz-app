@@ -20,12 +20,6 @@ namespace quiztest.QuestionsData
             sqlCon = new SqlConnection(Helper.GetConString("QuizTestDB"));
         }
 
-        /*public DataManagement(string qstn)
-        {
-            question = qstn;
-            sqlCon = new SqlConnection(Helper.GetConString("QuizTestDB"));
-        }*/
-
         public void InsertorUpdateData(string qstn, string optA, string optB, string optC, string optD)
         {
             try

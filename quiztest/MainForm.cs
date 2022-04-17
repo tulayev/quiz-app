@@ -10,10 +10,10 @@ namespace quiztest
 {
     public partial class MainForm : Form
     {
-        public CmdState cmdState; // command state enum
-        public Question Question { get; private set; } // question entity
-        private AddQuestions questionsForm; // question insertion form 
-        private RadioButton[] radioButtons = new RadioButton[4]; // radiobuttons array
+        public CmdState cmdState; 
+        public Question Question { get; private set; } 
+        private AddQuestions questionsForm; 
+        private RadioButton[] radioButtons = new RadioButton[4]; 
         private DataManagement dataManagement; 
         private List<Question> questions; 
         private int[] randArr;
@@ -30,7 +30,6 @@ namespace quiztest
             Init();
         }
 
-        // Initialization
         private void Init()
         {
             if (!timer.Enabled)
@@ -38,6 +37,7 @@ namespace quiztest
                 timer.Enabled = true;
                 testTimer = new TestTimer(timerMinutes, true);
             }
+
             confirmBtn.Enabled = false;
             questionNumber = 0;
             rightAnswersCount = 0;
@@ -50,6 +50,7 @@ namespace quiztest
             string[] opts = GetOptions(0);
             int radioBtnWidth = optPanel.Width;
             int radioBtnHeight = optPanel.Height / 4;
+
             for (int i = 0; i < radioButtons.Length; i++)
             {
                 int y = i % 4; 
@@ -63,14 +64,12 @@ namespace quiztest
             }
         }
 
-        // Update data
         public void UpdateBinding()
         {
             dataManagement = new DataManagement(this, "");
             questions = dataManagement.GetAllQuestions();
         }
 
-        // Switch the page when next button is clicked
         private void SwitchPage(int num)
         {
             string[] opts = GetOptions(num);
@@ -82,7 +81,6 @@ namespace quiztest
             radioButtons[3].Text = opts[randArr[3]];
         }
 
-        // Get question options according to the question number
         private string[] GetOptions(int num)
         {
             PropertyInfo[] properties = questions[num].GetType().GetProperties();
@@ -97,6 +95,7 @@ namespace quiztest
             }
 
             questionLabel.Text = (string)list[1];
+
             for (int i = 2; i < list.Count; i++)
             {
                 opts[i - 2] = (string)list[i];
@@ -105,7 +104,6 @@ namespace quiztest
             return opts;
         }
 
-        // Check answer and compute right answers
         private void CheckAnswer(int num)
         {
             string answer = questions[num].OptionA;
@@ -119,7 +117,6 @@ namespace quiztest
             }
         }
 
-        // Add question button
         private void добавитВопросToolStripMenuItem_Click(object sender, EventArgs e)
         {
             cmdState = CmdState.Add;
@@ -127,7 +124,6 @@ namespace quiztest
             questionsForm.Show();
         }
 
-        // Update question button
         private void изменитьВопросToolStripMenuItem_Click(object sender, EventArgs e)
         {
             dataManagement = new DataManagement(null, questionLabel.Text);
@@ -137,7 +133,6 @@ namespace quiztest
             questionsForm.Show();
         }
 
-        // Delete question button
         private void удалитьВопросToolStripMenuItem_Click(object sender, EventArgs e)
         {
             dataManagement = new DataManagement(this, questionLabel.Text);
@@ -150,7 +145,6 @@ namespace quiztest
             UpdateBinding();
         }
 
-        // Invoked when Next Button is clicked
         private void nextBtn_Click(object sender, EventArgs e)
         {
             if (questionNumber == questions.Count - 1)
@@ -166,7 +160,6 @@ namespace quiztest
             SwitchPage(questionNumber);
         }
 
-        // Confirm button when test ends
         private void confirmBtn_Click(object sender, EventArgs e)
         {
             int lastQuestion = questions.Count;
@@ -190,13 +183,11 @@ namespace quiztest
             }
         }
 
-        // Exit the app
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        // Set timer time
         private void setTimerBtn_Click(object sender, EventArgs e)
         {
             if (Int32.TryParse(timerTB.Text, out int res))
