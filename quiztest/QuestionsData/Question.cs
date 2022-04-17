@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace quiztest.QuestionsData
+﻿namespace quiztest.QuestionsData
 {
-    public class Question : EventArgs
+    public class Question 
     {
-        public int Id { get; set; }
+        public int QuestionId { get; set; }
 
         public string Qstn { get; set; }
 
@@ -15,17 +13,5 @@ namespace quiztest.QuestionsData
         public string OptionC { get; set; }
 
         public string OptionD { get; set; }
-
-        public Question() { }
-
-        public Question(int id, string q, string a, string b, string c, string d)
-        {
-            Id = id;
-            Qstn = q;
-            OptionA = a;
-            OptionB = b;
-            OptionC = c;
-            OptionD = d;
-        }
     }
 }

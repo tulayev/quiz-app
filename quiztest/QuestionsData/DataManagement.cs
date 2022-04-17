@@ -1,142 +1,63 @@
-﻿using System;
+﻿using Dapper;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.SQLite;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace quiztest.QuestionsData
 {
     class DataManagement
     {
-        private SqlConnection sqlCon;
-        private SqlCommand sqlCmd;
-        private string question;
-        private MainForm mainForm;
-
-        public DataManagement(MainForm mainForm, string qstn)
-        {
-            this.mainForm = mainForm;
-            question = qstn;
-            sqlCon = new SqlConnection(Helper.GetConString("QuizTestDB"));
-        }
-
-        public void InsertorUpdateData(string qstn, string optA, string optB, string optC, string optD)
-        {
-            try
-            {
-                if (sqlCon.State == ConnectionState.Closed)
-                    sqlCon.Open();
-
-                if (mainForm.cmdState == CmdState.Add)
-                {
-                    sqlCmd = new SqlCommand("AddOrEditQuestions", sqlCon);
-                    sqlCmd.CommandType = CommandType.StoredProcedure;
-                    sqlCmd.Parameters.AddWithValue("@mode", "Add");
-                    sqlCmd.Parameters.AddWithValue("@QuestionId", 0);
-                    sqlCmd.Parameters.AddWithValue("@Question", qstn.Trim());
-                    sqlCmd.Parameters.AddWithValue("@OptionA", optA.Trim());
-                    sqlCmd.Parameters.AddWithValue("@OptionB", optB.Trim());
-                    sqlCmd.Parameters.AddWithValue("@OptionC", optC.Trim());
-                    sqlCmd.Parameters.AddWithValue("@OptionD", optD.Trim());
-                    sqlCmd.ExecuteNonQuery();
-                    MessageBox.Show("Saved successfully!");
-                }
-                else if (mainForm.cmdState == CmdState.Update)
-                {
-                    sqlCmd = new SqlCommand("AddOrEditQuestions", sqlCon);
-                    sqlCmd.CommandType = CommandType.StoredProcedure;
-                    sqlCmd.Parameters.AddWithValue("@mode", "Edit");
-                    sqlCmd.Parameters.AddWithValue("@QuestionId", mainForm.Question.Id);
-                    sqlCmd.Parameters.AddWithValue("@Question", qstn.Trim());
-                    sqlCmd.Parameters.AddWithValue("@OptionA", optA.Trim());
-                    sqlCmd.Parameters.AddWithValue("@OptionB", optB.Trim());
-                    sqlCmd.Parameters.AddWithValue("@OptionC", optC.Trim());
-                    sqlCmd.Parameters.AddWithValue("@OptionD", optD.Trim());
-                    sqlCmd.ExecuteNonQuery();
-                    MessageBox.Show("Updated successfully!");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                sqlCon.Close();
-            }
-        }
-
-        public Question GetQuestion()
-        {
-            Question qstn = new Question();
-            try
-            {
-                if (sqlCon.State == ConnectionState.Closed)
-                    sqlCon.Open();
-
-                sqlCmd = new SqlCommand("SearchQuestion", sqlCon);
-                sqlCmd.CommandType = CommandType.StoredProcedure;
-                sqlCmd.Parameters.AddWithValue("@Question", question.Trim());
-                SqlDataReader reader = sqlCmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    qstn.Id = Convert.ToInt32(reader[0]);
-                    qstn.Qstn = reader[1].ToString();
-                    qstn.OptionA = reader[2].ToString();
-                    qstn.OptionB = reader[3].ToString();
-                    qstn.OptionC = reader[4].ToString();
-                    qstn.OptionD = reader[5].ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                sqlCon.Close();
-            }
-
-            return qstn;
-        }
+        private const string connName = "QuizTestDB";
+        private const string tableName = "QuestionsTable";
 
         public List<Question> GetAllQuestions()
         {
-            List<Question> list = new List<Question>();
-            try
+            using (IDbConnection conn = new SQLiteConnection(Helper.GetConString(connName)))
             {
-                if (sqlCon.State == ConnectionState.Closed)
-                    sqlCon.Open();
-
-                sqlCmd = new SqlCommand("SelectAllQuestions", sqlCon);
-                sqlCmd.CommandType = CommandType.StoredProcedure;
-                SqlDataReader reader = sqlCmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    Question qstn = new Question();
-                    qstn.Id = Convert.ToInt32(reader[0]);
-                    qstn.Qstn = reader[1].ToString();
-                    qstn.OptionA = reader[2].ToString();
-                    qstn.OptionB = reader[3].ToString();
-                    qstn.OptionC = reader[4].ToString();
-                    qstn.OptionD = reader[5].ToString();
-
-                    list.Add(qstn);
-                }
+                string sqlCommand = $"SELECT * FROM {tableName}";
+                var result = conn.Query<Question>(sqlCommand, new DynamicParameters());
+                return result.ToList();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                sqlCon.Close();
-            }
-
-            return list;
         }
 
-        public void DeleteQuestion()
+        public Question GetSingleQuestion(Question question)
+        {
+            using (IDbConnection conn = new SQLiteConnection(Helper.GetConString(connName)))
+            {
+                string sqlCommand = $"SELECT * FROM {tableName} WHERE QuestionId = {question.QuestionId}";
+                var result = conn.QuerySingle<Question>(sqlCommand);
+                return result;
+            }
+        }
+
+        public void InsertQuestion(Question question)
+        {
+            using (IDbConnection conn = new SQLiteConnection(Helper.GetConString(connName)))
+            {
+                string sqlCommand = $"INSERT INTO {tableName} (Qstn, OptionA, OptionB, OptionC, OptionD) " +
+                    $"VALUES (@Qstn, @OptionA, @OptionB, @OptionC, @OptionD)";
+
+                conn.Execute(sqlCommand, question);
+                MessageBox.Show("Успешно сохранено!");
+            }
+        }
+        
+        public void UpdateQuestion(Question question)
+        {
+            using (IDbConnection conn = new SQLiteConnection(Helper.GetConString(connName)))
+            {
+                string sqlCommand = $"UPDATE {tableName} " +
+                    $"SET Qstn = @Qstn, OptionA = @OptionA, OptionB = @OptionB, OptionC = @OptionC, OptionD = @sOptionD " +
+                    $"WHERE QuestionId = ${question.QuestionId}";
+
+                conn.Execute(sqlCommand, question);
+                MessageBox.Show("Успешно изменено!");
+            }
+        }
+
+        /*public void DeleteQuestion()
         {
             try
             {
@@ -145,9 +66,9 @@ namespace quiztest.QuestionsData
 
                 if (mainForm.cmdState == CmdState.Delete)
                 {
-                    sqlCmd = new SqlCommand("DeleteQuestion", sqlCon);
+                    sqlCmd = new SQLiteCommand("DeleteQuestion", sqlCon);
                     sqlCmd.CommandType = CommandType.StoredProcedure;
-                    sqlCmd.Parameters.AddWithValue("@QuestionId", mainForm.Question.Id);
+                    sqlCmd.Parameters.AddWithValue("@QuestionId", mainForm.Question.QuestionId);
                     sqlCmd.ExecuteNonQuery();
                     MessageBox.Show("Removed");
                 }
@@ -160,9 +81,55 @@ namespace quiztest.QuestionsData
             {
                 sqlCon.Close();
             }
-        }
+        }*//*public void DeleteQuestion()
+        {
+            try
+            {
+                if (sqlCon.State == ConnectionState.Closed)
+                    sqlCon.Open();
+
+                if (mainForm.cmdState == CmdState.Delete)
+                {
+                    sqlCmd = new SQLiteCommand("DeleteQuestion", sqlCon);
+                    sqlCmd.CommandType = CommandType.StoredProcedure;
+                    sqlCmd.Parameters.AddWithValue("@QuestionId", mainForm.Question.QuestionId);
+                    sqlCmd.ExecuteNonQuery();
+                    MessageBox.Show("Removed");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                sqlCon.Close();
+            }
+        }*//*public void DeleteQuestion()
+        {
+            try
+            {
+                if (sqlCon.State == ConnectionState.Closed)
+                    sqlCon.Open();
+
+                if (mainForm.cmdState == CmdState.Delete)
+                {
+                    sqlCmd = new SQLiteCommand("DeleteQuestion", sqlCon);
+                    sqlCmd.CommandType = CommandType.StoredProcedure;
+                    sqlCmd.Parameters.AddWithValue("@QuestionId", mainForm.Question.QuestionId);
+                    sqlCmd.ExecuteNonQuery();
+                    MessageBox.Show("Removed");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                sqlCon.Close();
+            }
+        }*/
 
     }
-
-    public enum CmdState { Default, Add, Update, Delete }
 }

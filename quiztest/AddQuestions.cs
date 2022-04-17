@@ -1,53 +1,65 @@
-﻿using quiztest.QuestionsData;
-using System;
+﻿using System;
+using quiztest.QuestionsData;
 using System.Windows.Forms;
 
 namespace quiztest
 {
     public partial class AddQuestions : Form
     {
-        private MainForm mainForm;
+        private DataManagement _data;
+        private Question _question;
 
-        public AddQuestions(MainForm mainForm)
-        {
-            this.mainForm = mainForm;
-            Init();
-        }
-
-        private void Init()
+        public AddQuestions(Question question)
         {
             InitializeComponent();
-            switch (mainForm.cmdState)
+            _data = new DataManagement();
+            _question = question;
+
+            if (_question is null)
             {
-                case CmdState.Add:
-                    okBtn.Text = "Добавить";
-                    break;
-
-                case CmdState.Update:
-                    okBtn.Text = "Изменить"; 
-                    EditState();
-                    break;
+                questionTB.Text = String.Empty;
+                optATB.Text = String.Empty;
+                optBTB.Text = String.Empty;
+                optCTB.Text = String.Empty;
+                optDTB.Text = String.Empty;
             }
-        }
-
-        private void EditState()
-        {
-            questionTB.Text = mainForm.Question.Qstn;
-            optATB.Text = mainForm.Question.OptionA;
-            optBTB.Text = mainForm.Question.OptionB;
-            optCTB.Text = mainForm.Question.OptionC;
-            optDTB.Text = mainForm.Question.OptionD;
+            else
+            {
+                questionTB.Text = _question.Qstn;
+                optATB.Text = _question.OptionA;
+                optBTB.Text = _question.OptionB;
+                optCTB.Text = _question.OptionC;
+                optDTB.Text = _question.OptionD;
+            }
         }
 
         private void okBtn_Click(object sender, EventArgs e)
         {
-            DataManagement dataManagement = new DataManagement(mainForm, "");
-
             if (!String.IsNullOrEmpty(questionTB.Text) && !String.IsNullOrEmpty(optATB.Text) &&
                 !String.IsNullOrEmpty(optBTB.Text) && !String.IsNullOrEmpty(optCTB.Text) &&
                 !String.IsNullOrEmpty(optDTB.Text))
             {
-                dataManagement.InsertorUpdateData(questionTB.Text, optATB.Text, optBTB.Text, optCTB.Text, optDTB.Text);
+                if (_question is null)
+                {
+                    _data.InsertQuestion(new Question
+                    {
+                        Qstn = questionTB.Text.Trim(),
+                        OptionA = optATB.Text.Trim(),
+                        OptionB = optBTB.Text.Trim(),
+                        OptionC = optCTB.Text.Trim(),
+                        OptionD = optDTB.Text.Trim()
+                    });
+                } 
+                else 
+                {
+                    _question.Qstn = questionTB.Text.Trim();
+                    _question.OptionA = optATB.Text.Trim();
+                    _question.OptionB = optATB.Text.Trim();
+                    _question.OptionC = optCTB.Text.Trim();
+                    _question.OptionD = optDTB.Text.Trim();
+                    _data.UpdateQuestion(_question);
+                }
+
                 ClearTextBoxes();
             }
             else
@@ -58,7 +70,8 @@ namespace quiztest
 
         private void closeBtn_Click(object sender, EventArgs e)
         {
-            mainForm.UpdateBinding();
+            MainForm form = new MainForm();
+            form.ShowDialog();
             this.Close();
         }
 
@@ -66,6 +79,5 @@ namespace quiztest
         {
             questionTB.Text = optATB.Text = optBTB.Text = optCTB.Text = optDTB.Text = String.Empty;
         }
-
     }
 }
