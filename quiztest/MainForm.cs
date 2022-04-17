@@ -108,6 +108,7 @@ namespace quiztest
             CheckAnswer(_questionNumber);
 
             _questionNumber++;
+
             SwitchPage(_questionNumber);
         }
 
@@ -157,6 +158,14 @@ namespace quiztest
         {
             string[] opts = GetOptions(num);
             qstnNumLabel.Text = $"Вопрос №{num + 1} из {_questions.Count}";
+
+            foreach (RadioButton radio in radioButtons)
+            {
+                if (radio.Checked)
+                {
+                    radio.Checked = false;
+                }
+            }
 
             radioButtons[0].Text = opts[_randArr[0]];
             radioButtons[1].Text = opts[_randArr[1]];
