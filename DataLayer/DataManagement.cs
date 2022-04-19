@@ -1,13 +1,14 @@
 ﻿using Dapper;
+using DataLayer.Data;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace quiztest.QuestionsData
+namespace DataLayer.QuestionsData
 {
-    class DataManagement
+    public class DataManagement
     {
         private const string connName = "QuizTestDB";
         private const string tableName = "QuestionsTable";
@@ -49,8 +50,8 @@ namespace quiztest.QuestionsData
             using (IDbConnection conn = new SQLiteConnection(Helper.GetConString(connName)))
             {
                 string sqlCommand = $"UPDATE {tableName} " +
-                    $"SET Qstn = @Qstn, OptionA = @OptionA, OptionB = @OptionB, OptionC = @OptionC, OptionD = @sOptionD " +
-                    $"WHERE QuestionId = ${question.QuestionId}";
+                    "SET Qstn = @Qstn, OptionA = @OptionA, OptionB = @OptionB, OptionC = @OptionC, OptionD = @OptionD " +
+                    "WHERE QuestionId = @QuestionId";
 
                 conn.Execute(sqlCommand, question);
                 MessageBox.Show("Успешно изменено!");

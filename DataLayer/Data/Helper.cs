@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace quiztest.QuestionsData
+namespace DataLayer.Data
 {
     static class Helper
     {

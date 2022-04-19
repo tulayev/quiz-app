@@ -1,4 +1,4 @@
-﻿namespace quiztest.QuestionsData
+﻿namespace DataLayer.Data
 {
     public class Question 
     {

@@ -1,8 +1,9 @@
 ﻿using System;
-using quiztest.QuestionsData;
 using System.Windows.Forms;
+using DataLayer.QuestionsData;
+using DataLayer.Data;
 
-namespace quiztest
+namespace QuizAppUI
 {
     public partial class AddQuestions : Form
     {

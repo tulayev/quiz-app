@@ -1,4 +1,4 @@
-﻿namespace quiztest
+﻿namespace QuizAppUI
 {
     partial class MainForm
     {

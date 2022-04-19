@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace quiztest.Core
+namespace QuizAppUI.Core
 {
     public static class Extensions
     {

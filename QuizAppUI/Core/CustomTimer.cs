@@ -1,7 +1,6 @@
-﻿
-namespace quiztest.Core
+﻿namespace QuizAppUI.Core
 {
-    public class TestTimer
+    public class CustomTimer
     {
         public int Hours { get; set; }
         public int Minutes { get; set; }
@@ -9,7 +8,7 @@ namespace quiztest.Core
         public int Secs { get; set; }
         public bool IsRunning { get; set; }
 
-        public TestTimer(int seconds, bool isRunning)
+        public CustomTimer(int seconds, bool isRunning)
         {
             Seconds = seconds;
             IsRunning = isRunning;

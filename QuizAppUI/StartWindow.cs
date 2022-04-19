@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace quiztest
+namespace QuizAppUI
 {
     public partial class StartWindow : Form
     {

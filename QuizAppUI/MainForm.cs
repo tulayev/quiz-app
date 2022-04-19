@@ -1,13 +1,14 @@
-﻿using quiztest.Core;
-using quiztest.QuestionsData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using DataLayer.Data;
+using DataLayer.QuestionsData;
+using QuizAppUI.Core;
 
-namespace quiztest
+namespace QuizAppUI
 {
     public partial class MainForm : Form
     {
@@ -18,7 +19,7 @@ namespace quiztest
         private int[] _randArr;
         private int _questionNumber = 0;
         private int _rightAnswersCount = 0;
-        private TestTimer _testTimer;
+        private CustomTimer _testTimer;
         private int _timerMinutes = 30 * 60;
 
         public MainForm()
@@ -34,7 +35,7 @@ namespace quiztest
             if (!timer.Enabled)
             {
                 timer.Enabled = true;
-                _testTimer = new TestTimer(_timerMinutes, true);
+                _testTimer = new CustomTimer(_timerMinutes, true);
             }
 
             confirmBtn.Enabled = false;
