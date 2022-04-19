@@ -206,7 +206,8 @@
             this.Controls.Add(this.optBLabel);
             this.Controls.Add(this.optCLabel);
             this.Controls.Add(this.optDLabel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MaximizeBox = false;
             this.Name = "AddQuestions";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AddQuestions";

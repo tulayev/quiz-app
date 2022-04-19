@@ -72,8 +72,8 @@ namespace QuizAppUI
         private void closeBtn_Click(object sender, EventArgs e)
         {
             MainForm form = new MainForm();
-            form.ShowDialog();
-            this.Close();
+            this.Hide();
+            form.Show();
         }
 
         private void ClearTextBoxes()

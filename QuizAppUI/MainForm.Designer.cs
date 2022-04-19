@@ -41,15 +41,15 @@
             this.добавитВопросToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.изменитьВопросToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.удалитьВопросToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.установитьТаймерToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel3 = new System.Windows.Forms.Panel();
             this.optPanel = new System.Windows.Forms.Panel();
             this.timerLabel = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.qstnNumLabel = new System.Windows.Forms.Label();
-            this.установитьТаймерToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerSetPanel = new System.Windows.Forms.Panel();
-            this.timerTB = new System.Windows.Forms.TextBox();
             this.setTimerBtn = new System.Windows.Forms.Button();
+            this.timerTB = new System.Windows.Forms.TextBox();
             this.panel2.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.timerSetPanel.SuspendLayout();
@@ -124,7 +124,7 @@
             // выходToolStripMenuItem
             // 
             this.выходToolStripMenuItem.Name = "выходToolStripMenuItem";
-            this.выходToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.выходToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.выходToolStripMenuItem.Text = "Выход";
             this.выходToolStripMenuItem.Click += new System.EventHandler(this.выходToolStripMenuItem_Click);
             // 
@@ -142,23 +142,30 @@
             // добавитВопросToolStripMenuItem
             // 
             this.добавитВопросToolStripMenuItem.Name = "добавитВопросToolStripMenuItem";
-            this.добавитВопросToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.добавитВопросToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.добавитВопросToolStripMenuItem.Text = "Добавит вопрос";
             this.добавитВопросToolStripMenuItem.Click += new System.EventHandler(this.добавитВопросToolStripMenuItem_Click);
             // 
             // изменитьВопросToolStripMenuItem
             // 
             this.изменитьВопросToolStripMenuItem.Name = "изменитьВопросToolStripMenuItem";
-            this.изменитьВопросToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.изменитьВопросToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.изменитьВопросToolStripMenuItem.Text = "Изменить вопрос";
             this.изменитьВопросToolStripMenuItem.Click += new System.EventHandler(this.изменитьВопросToolStripMenuItem_Click);
             // 
             // удалитьВопросToolStripMenuItem
             // 
             this.удалитьВопросToolStripMenuItem.Name = "удалитьВопросToolStripMenuItem";
-            this.удалитьВопросToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.удалитьВопросToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.удалитьВопросToolStripMenuItem.Text = "Удалить вопрос";
             this.удалитьВопросToolStripMenuItem.Click += new System.EventHandler(this.удалитьВопросToolStripMenuItem_Click);
+            // 
+            // установитьТаймерToolStripMenuItem
+            // 
+            this.установитьТаймерToolStripMenuItem.Name = "установитьТаймерToolStripMenuItem";
+            this.установитьТаймерToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.установитьТаймерToolStripMenuItem.Text = "Установить таймер";
+            this.установитьТаймерToolStripMenuItem.Click += new System.EventHandler(this.установитьТаймерToolStripMenuItem_Click);
             // 
             // panel3
             // 
@@ -201,13 +208,6 @@
             this.qstnNumLabel.TabIndex = 19;
             this.qstnNumLabel.Text = "label1";
             // 
-            // установитьТаймерToolStripMenuItem
-            // 
-            this.установитьТаймерToolStripMenuItem.Name = "установитьТаймерToolStripMenuItem";
-            this.установитьТаймерToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.установитьТаймерToolStripMenuItem.Text = "Установить таймер";
-            this.установитьТаймерToolStripMenuItem.Click += new System.EventHandler(this.установитьТаймерToolStripMenuItem_Click);
-            // 
             // timerSetPanel
             // 
             this.timerSetPanel.Controls.Add(this.setTimerBtn);
@@ -218,13 +218,6 @@
             this.timerSetPanel.TabIndex = 20;
             this.timerSetPanel.Visible = false;
             // 
-            // timerTB
-            // 
-            this.timerTB.Location = new System.Drawing.Point(80, 17);
-            this.timerTB.Name = "timerTB";
-            this.timerTB.Size = new System.Drawing.Size(48, 20);
-            this.timerTB.TabIndex = 0;
-            // 
             // setTimerBtn
             // 
             this.setTimerBtn.Location = new System.Drawing.Point(80, 61);
@@ -234,6 +227,13 @@
             this.setTimerBtn.Text = "Ok";
             this.setTimerBtn.UseVisualStyleBackColor = true;
             this.setTimerBtn.Click += new System.EventHandler(this.setTimerBtn_Click);
+            // 
+            // timerTB
+            // 
+            this.timerTB.Location = new System.Drawing.Point(80, 17);
+            this.timerTB.Name = "timerTB";
+            this.timerTB.Size = new System.Drawing.Size(48, 20);
+            this.timerTB.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -250,10 +250,12 @@
             this.Controls.Add(this.nextBtn);
             this.Controls.Add(this.confirmBtn);
             this.Controls.Add(this.questionLabel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MainMenuStrip = this.menuStrip;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.menuStrip.ResumeLayout(false);

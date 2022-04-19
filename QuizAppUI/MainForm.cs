@@ -75,12 +75,14 @@ namespace QuizAppUI
         private void добавитВопросToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _questionsForm = new AddQuestions(null);
+            this.Hide();
             _questionsForm.Show();
         }
 
         private void изменитьВопросToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _questionsForm = new AddQuestions(_questions[_questionNumber]);
+            this.Hide();
             _questionsForm.Show();
         }
 
@@ -209,6 +211,15 @@ namespace QuizAppUI
                     break;
                 }
             }
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            StartWindow sw = (StartWindow)Application.OpenForms["StartWindow"];
+            sw.Close();
+
+            AddQuestions questionsForm = (AddQuestions)Application.OpenForms["AddQuestions"];
+            questionsForm.Close();
         }
     }
 }

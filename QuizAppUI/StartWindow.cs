@@ -12,10 +12,9 @@ namespace QuizAppUI
 
         private void startBtn_Click(object sender, EventArgs e)
         {
+            MainForm form = new MainForm();
             this.Hide();
-            MainForm mainForm = new MainForm();
-            mainForm.Closed += (s, args) => this.Close();
-            mainForm.Show();
+            form.Show();
         }
 
         private void exitBtn_Click(object sender, EventArgs e)
