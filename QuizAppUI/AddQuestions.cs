@@ -55,7 +55,7 @@ namespace QuizAppUI
                 {
                     _question.Qstn = questionTB.Text.Trim();
                     _question.OptionA = optATB.Text.Trim();
-                    _question.OptionB = optATB.Text.Trim();
+                    _question.OptionB = optBTB.Text.Trim();
                     _question.OptionC = optCTB.Text.Trim();
                     _question.OptionD = optDTB.Text.Trim();
                     _data.UpdateQuestion(_question);

@@ -13,13 +13,13 @@ namespace QuizAppUI
     public partial class MainForm : Form
     {
         private AddQuestions _questionsForm; 
-        private RadioButton[] radioButtons = new RadioButton[4]; 
+        private RadioButton[] _radioButtons = new RadioButton[4]; 
         private DataManagement _data = new DataManagement(); 
         private List<Question> _questions;
         private string[] _rightAnswers;
+        private string[] _userAnswers;
         private int[] _randArr;
         private int _questionNumber = 0;
-        private int _rightAnswersCount = 0;
         private CustomTimer _customTimer;
         private int _timerMinutes = 30 * 60;
 
@@ -39,6 +39,7 @@ namespace QuizAppUI
 
             _questions = _data.GetAllQuestions();
             _rightAnswers = _questions.Select(q => q.OptionA).ToArray();
+            _userAnswers = new string[_rightAnswers.Length];
 
             if (_questions.Count > 0)
             {
@@ -49,11 +50,11 @@ namespace QuizAppUI
                 int radioBtnWidth = optPanel.Width;
                 int radioBtnHeight = optPanel.Height / 4;
 
-                for (int i = 0; i < radioButtons.Length; i++)
+                for (int i = 0; i < _radioButtons.Length; i++)
                 {
                     int y = i % 4;
 
-                    radioButtons[i] = new RadioButton
+                    _radioButtons[i] = new RadioButton
                     {
                         Size = new Size(radioBtnWidth, radioBtnHeight),
                         Location = new Point(10, y * radioBtnHeight),
@@ -61,7 +62,7 @@ namespace QuizAppUI
                         Text = opts[_randArr[i]]
                     };
 
-                    optPanel.Controls.Add(radioButtons[i]);
+                    optPanel.Controls.Add(_radioButtons[i]);
                 }
             }
             else
@@ -99,27 +100,53 @@ namespace QuizAppUI
 
         private void nextBtn_Click(object sender, EventArgs e)
         {
-            CheckAnswer(_questionNumber);
+            var radio = _radioButtons.FirstOrDefault(r => r.Checked);
+
+            if (radio != null)
+            {
+                _userAnswers[_questionNumber] = radio.Text;
+            }
 
             _questionNumber++;
-
             SwitchPage(_questionNumber);
         }
 
         private void prevBtn_Click(object sender, EventArgs e)
         {
-            CheckAnswer(_questionNumber);
+            var radio = _radioButtons.FirstOrDefault(r => r.Checked);
+
+            if (radio != null)
+            {
+                _userAnswers[_questionNumber] = radio.Text;
+            }
 
             _questionNumber--;
-
             SwitchPage(_questionNumber);
         }
 
         private void confirmBtn_Click(object sender, EventArgs e)
         {
-            int lastQuestion = _questions.Count;
-            CheckAnswer(lastQuestion - 1);
-            MessageBox.Show($"Вы дали {_rightAnswersCount} правильных ответов из {lastQuestion}");
+            int rightAnswerscount = 0;
+
+            var radio = _radioButtons.FirstOrDefault(r => r.Checked);
+
+            if (radio != null)
+            {
+                _userAnswers[_questionNumber] = radio.Text;
+            }
+
+            foreach (string rA in _rightAnswers)
+            {
+                foreach (string uA in _userAnswers)
+                {
+                    if (rA == uA)
+                    {
+                        rightAnswerscount++;
+                    }
+                }
+            }
+
+            MessageBox.Show($"Вы дали {rightAnswerscount} правильных ответов из {_questions.Count}");
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -162,18 +189,16 @@ namespace QuizAppUI
             string[] opts = GetOptions(num);
             qstnNumLabel.Text = $"Вопрос №{num + 1} из {_questions.Count}";
 
-            foreach (RadioButton radio in radioButtons)
-            {
-                if (radio.Checked)
+            _radioButtons = _radioButtons.Select(r => 
                 {
-                    radio.Checked = false;
-                }
-            }
+                    r.Checked = false;
+                    return r;
+                }).ToArray();
 
-            radioButtons[0].Text = opts[_randArr[0]];
-            radioButtons[1].Text = opts[_randArr[1]];
-            radioButtons[2].Text = opts[_randArr[2]];
-            radioButtons[3].Text = opts[_randArr[3]];
+            _radioButtons[0].Text = opts[_randArr[0]];
+            _radioButtons[1].Text = opts[_randArr[1]];
+            _radioButtons[2].Text = opts[_randArr[2]];
+            _radioButtons[3].Text = opts[_randArr[3]];
         }
 
         private string[] GetOptions(int num)
@@ -199,20 +224,6 @@ namespace QuizAppUI
             return opts;
         }
 
-        private void CheckAnswer(int num)
-        {
-            string answer = _questions[num].OptionA;
-
-            foreach (RadioButton radioBtn in optPanel.Controls)
-            {
-                if (radioBtn.Checked && radioBtn.Text.Equals(answer))
-                {
-                    _rightAnswersCount++;
-                    break;
-                }
-            }
-        }
-
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             StartWindow sw = (StartWindow)Application.OpenForms["StartWindow"];
@@ -230,7 +241,7 @@ namespace QuizAppUI
 
         private void timerValidator_Tick(object sender, EventArgs e)
         {
-            if (_questionNumber == _questions.Count - 1)
+            if (_questionNumber == _questions.Count - 1) 
             {
                 prevBtn.Enabled = true;
                 confirmBtn.Enabled = true;

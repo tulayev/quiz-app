@@ -214,7 +214,7 @@
             // 
             this.timerSetPanel.Controls.Add(this.setTimerBtn);
             this.timerSetPanel.Controls.Add(this.timerTB);
-            this.timerSetPanel.Location = new System.Drawing.Point(388, 377);
+            this.timerSetPanel.Location = new System.Drawing.Point(380, 361);
             this.timerSetPanel.Name = "timerSetPanel";
             this.timerSetPanel.Size = new System.Drawing.Size(200, 100);
             this.timerSetPanel.TabIndex = 20;
