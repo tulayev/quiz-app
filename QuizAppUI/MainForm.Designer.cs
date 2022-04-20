@@ -50,6 +50,8 @@
             this.timerSetPanel = new System.Windows.Forms.Panel();
             this.setTimerBtn = new System.Windows.Forms.Button();
             this.timerTB = new System.Windows.Forms.TextBox();
+            this.timerValidator = new System.Windows.Forms.Timer(this.components);
+            this.prevBtn = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.timerSetPanel.SuspendLayout();
@@ -67,6 +69,7 @@
             // 
             // confirmBtn
             // 
+            this.confirmBtn.Enabled = false;
             this.confirmBtn.FlatAppearance.BorderSize = 0;
             this.confirmBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.confirmBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -83,7 +86,7 @@
             this.nextBtn.FlatAppearance.BorderSize = 0;
             this.nextBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.nextBtn.Image = ((System.Drawing.Image)(resources.GetObject("nextBtn.Image")));
-            this.nextBtn.Location = new System.Drawing.Point(32, 407);
+            this.nextBtn.Location = new System.Drawing.Point(112, 407);
             this.nextBtn.Name = "nextBtn";
             this.nextBtn.Size = new System.Drawing.Size(95, 43);
             this.nextBtn.TabIndex = 10;
@@ -189,9 +192,8 @@
             this.timerLabel.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.timerLabel.Location = new System.Drawing.Point(760, 94);
             this.timerLabel.Name = "timerLabel";
-            this.timerLabel.Size = new System.Drawing.Size(69, 23);
+            this.timerLabel.Size = new System.Drawing.Size(0, 23);
             this.timerLabel.TabIndex = 18;
-            this.timerLabel.Text = "label1";
             // 
             // timer
             // 
@@ -235,12 +237,32 @@
             this.timerTB.Size = new System.Drawing.Size(48, 20);
             this.timerTB.TabIndex = 0;
             // 
+            // timerValidator
+            // 
+            this.timerValidator.Enabled = true;
+            this.timerValidator.Interval = 1;
+            this.timerValidator.Tick += new System.EventHandler(this.timerValidator_Tick);
+            // 
+            // prevBtn
+            // 
+            this.prevBtn.Enabled = false;
+            this.prevBtn.FlatAppearance.BorderSize = 0;
+            this.prevBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.prevBtn.Image = ((System.Drawing.Image)(resources.GetObject("prevBtn.Image")));
+            this.prevBtn.Location = new System.Drawing.Point(22, 407);
+            this.prevBtn.Name = "prevBtn";
+            this.prevBtn.Size = new System.Drawing.Size(95, 43);
+            this.prevBtn.TabIndex = 21;
+            this.prevBtn.UseVisualStyleBackColor = true;
+            this.prevBtn.Click += new System.EventHandler(this.prevBtn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LavenderBlush;
             this.ClientSize = new System.Drawing.Size(955, 540);
+            this.Controls.Add(this.prevBtn);
             this.Controls.Add(this.timerSetPanel);
             this.Controls.Add(this.qstnNumLabel);
             this.Controls.Add(this.timerLabel);
@@ -289,6 +311,8 @@
         private System.Windows.Forms.Panel timerSetPanel;
         private System.Windows.Forms.TextBox timerTB;
         private System.Windows.Forms.Button setTimerBtn;
+        private System.Windows.Forms.Timer timerValidator;
+        private System.Windows.Forms.Button prevBtn;
     }
 }
 

@@ -15,18 +15,17 @@ namespace QuizAppUI
         private AddQuestions _questionsForm; 
         private RadioButton[] radioButtons = new RadioButton[4]; 
         private DataManagement _data = new DataManagement(); 
-        private List<Question> _questions; 
+        private List<Question> _questions;
+        private string[] _rightAnswers;
         private int[] _randArr;
         private int _questionNumber = 0;
         private int _rightAnswersCount = 0;
-        private CustomTimer _testTimer;
+        private CustomTimer _customTimer;
         private int _timerMinutes = 30 * 60;
 
         public MainForm()
         {
             InitializeComponent();
-            StartWindow sw = new StartWindow();
-            sw.Close();
             Init();
         }
 
@@ -35,12 +34,11 @@ namespace QuizAppUI
             if (!timer.Enabled)
             {
                 timer.Enabled = true;
-                _testTimer = new CustomTimer(_timerMinutes, true);
+                _customTimer = new CustomTimer(_timerMinutes, true);
             }
 
-            confirmBtn.Enabled = false;
-
             _questions = _data.GetAllQuestions();
+            _rightAnswers = _questions.Select(q => q.OptionA).ToArray();
 
             if (_questions.Count > 0)
             {
@@ -101,16 +99,18 @@ namespace QuizAppUI
 
         private void nextBtn_Click(object sender, EventArgs e)
         {
-            if (_questionNumber == _questions.Count - 1)
-            {
-                confirmBtn.Enabled = true;
-                nextBtn.Enabled = false;
-                return;
-            }
-
             CheckAnswer(_questionNumber);
 
             _questionNumber++;
+
+            SwitchPage(_questionNumber);
+        }
+
+        private void prevBtn_Click(object sender, EventArgs e)
+        {
+            CheckAnswer(_questionNumber);
+
+            _questionNumber--;
 
             SwitchPage(_questionNumber);
         }
@@ -124,16 +124,16 @@ namespace QuizAppUI
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            _testTimer.TimerRun();
+            _customTimer.TimerRun();
 
-            if (_testTimer.Hours == 0 && _testTimer.Minutes == 0 && _testTimer.Secs == 0)
+            if (_customTimer.Hours == 0 && _customTimer.Minutes == 0 && _customTimer.Secs == 0)
             {
                 timer.Enabled = false;
-                _testTimer.IsRunning = false;
+                _customTimer.IsRunning = false;
             }
             else
             {
-                string time = String.Format("{0:00}:{1:00}:{2:00}", _testTimer.Hours, _testTimer.Minutes, _testTimer.Secs);
+                string time = String.Format("{0:00}:{1:00}:{2:00}", _customTimer.Hours, _customTimer.Minutes, _customTimer.Secs);
                 timerLabel.Text = time;
             }
         }
@@ -216,10 +216,38 @@ namespace QuizAppUI
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             StartWindow sw = (StartWindow)Application.OpenForms["StartWindow"];
-            sw.Close();
+            if (sw != null)
+            {
+                sw.Close();
+            }
 
             AddQuestions questionsForm = (AddQuestions)Application.OpenForms["AddQuestions"];
-            questionsForm.Close();
+            if (questionsForm != null)
+            {
+                questionsForm.Close();
+            }
+        }
+
+        private void timerValidator_Tick(object sender, EventArgs e)
+        {
+            if (_questionNumber == _questions.Count - 1)
+            {
+                prevBtn.Enabled = true;
+                confirmBtn.Enabled = true;
+                nextBtn.Enabled = false;
+            } 
+            else if (_questionNumber > 0 && _questionNumber < _questions.Count - 1)
+            {
+                prevBtn.Enabled = true;
+                confirmBtn.Enabled = false;
+                nextBtn.Enabled = true;
+            }
+            else if (_questionNumber == 0)
+            {
+                prevBtn.Enabled = false;
+                confirmBtn.Enabled = false;
+                nextBtn.Enabled = true;
+            }
         }
     }
 }
