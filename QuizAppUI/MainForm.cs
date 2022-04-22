@@ -100,6 +100,11 @@ namespace QuizAppUI
 
         private void nextBtn_Click(object sender, EventArgs e)
         {
+            if (_radioButtons.All(r => !r.Checked))
+            {
+                return;
+            }
+
             var radio = _radioButtons.FirstOrDefault(r => r.Checked);
 
             if (radio != null)
@@ -113,6 +118,11 @@ namespace QuizAppUI
 
         private void prevBtn_Click(object sender, EventArgs e)
         {
+            if (_radioButtons.All(r => !r.Checked))
+            {
+                return;
+            }
+
             var radio = _radioButtons.FirstOrDefault(r => r.Checked);
 
             if (radio != null)
