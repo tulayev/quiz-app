@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System;
+using Dapper;
 using DataLayer.Data;
 using System.Collections.Generic;
 using System.Data;
@@ -10,6 +11,8 @@ namespace DataLayer.QuestionsData
 {
     public class DataManagement
     {
+        public event EventHandler OnQuestionDeleted;
+
         private const string connName = "QuizTestDB";
         private const string tableName = "QuestionsTable";
 
@@ -58,79 +61,20 @@ namespace DataLayer.QuestionsData
             }
         }
 
-        /*public void DeleteQuestion()
+        public void DeleteQuestion(Question question)
         {
-            try
+            using (IDbConnection conn = new SQLiteConnection(Helper.GetConString(connName)))
             {
-                if (sqlCon.State == ConnectionState.Closed)
-                    sqlCon.Open();
+                string sqlCommand = $"DELETE FROM {tableName} " +
+                    "WHERE QuestionId = @QuestionId";
 
-                if (mainForm.cmdState == CmdState.Delete)
-                {
-                    sqlCmd = new SQLiteCommand("DeleteQuestion", sqlCon);
-                    sqlCmd.CommandType = CommandType.StoredProcedure;
-                    sqlCmd.Parameters.AddWithValue("@QuestionId", mainForm.Question.QuestionId);
-                    sqlCmd.ExecuteNonQuery();
-                    MessageBox.Show("Removed");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                sqlCon.Close();
-            }
-        }*//*public void DeleteQuestion()
-        {
-            try
-            {
-                if (sqlCon.State == ConnectionState.Closed)
-                    sqlCon.Open();
+                conn.Execute(sqlCommand, question);
 
-                if (mainForm.cmdState == CmdState.Delete)
-                {
-                    sqlCmd = new SQLiteCommand("DeleteQuestion", sqlCon);
-                    sqlCmd.CommandType = CommandType.StoredProcedure;
-                    sqlCmd.Parameters.AddWithValue("@QuestionId", mainForm.Question.QuestionId);
-                    sqlCmd.ExecuteNonQuery();
-                    MessageBox.Show("Removed");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                sqlCon.Close();
-            }
-        }*//*public void DeleteQuestion()
-        {
-            try
-            {
-                if (sqlCon.State == ConnectionState.Closed)
-                    sqlCon.Open();
+                OnQuestionDeleted?.Invoke(this, null);
 
-                if (mainForm.cmdState == CmdState.Delete)
-                {
-                    sqlCmd = new SQLiteCommand("DeleteQuestion", sqlCon);
-                    sqlCmd.CommandType = CommandType.StoredProcedure;
-                    sqlCmd.Parameters.AddWithValue("@QuestionId", mainForm.Question.QuestionId);
-                    sqlCmd.ExecuteNonQuery();
-                    MessageBox.Show("Removed");
-                }
+                MessageBox.Show("Успешно удалено!");
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                sqlCon.Close();
-            }
-        }*/
+        }
 
     }
 }

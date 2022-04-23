@@ -26,7 +26,15 @@ namespace QuizAppUI
         public MainForm()
         {
             InitializeComponent();
+            _data.OnQuestionDeleted += QuestionsUpdated;
             Init();
+        }
+
+        private void QuestionsUpdated(object sender, EventArgs e)
+        {
+            MainForm form = new MainForm();
+            this.Hide();
+            form.Show();
         }
 
         private void Init()
@@ -87,15 +95,7 @@ namespace QuizAppUI
 
         private void удалитьВопросToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            /*dataManagement = new DataManagement(this, questionLabel.Text);
-            Question = dataManagement.GetQuestion(questions[questionNumber]);
-            cmdState = CmdState.Delete;
-            dataManagement.DeleteQuestion();
-
-            questionNumber = (questionNumber > 0) ? questionNumber - 1 : questionNumber + 1;
-
-            SwitchPage(questionNumber);
-            UpdateBinding();*/
+            _data.DeleteQuestion(_questions[_questionNumber]);
         }
 
         private void nextBtn_Click(object sender, EventArgs e)
